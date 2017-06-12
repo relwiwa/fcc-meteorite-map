@@ -6,13 +6,19 @@ import React, { Component } from 'react';
 import { geoMercator as d3GeoMercator, geoPath as d3GeoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
 
+import SPEX from '../data/meteorite-map.spex';
+
 /*  Origin of data:
     - SHP-file from http://www.naturalearthdata.com
-    - Converted using ogr2ogr to geoJson and then to topoJson */
+    - Converted using ogr2ogr to geoJson and then to topoJson
+    - Antarctica was extracted
+    - Commands:
+      - ogr2ogr -f GeoJSON -where "ISO_A2 NOT IN ('AQ')" units.json ne_50m_admin_0_countries_lakes.shp
+      - topojson --simplify-proportion .08 --id-property SU_A3 -p name=NAME -o countries.json units.json */
 import topoJsonData from '../data/countries.topo.json';
 
-const chartHeight = 600;
-const chartWidth = 800;
+const chartWidth = 1200;
+const chartHeight = chartWidth * 0.7;
 
 class Map extends Component {
   constructor(props) {
@@ -32,8 +38,7 @@ class Map extends Component {
   mapProjection() {
     return (
       d3GeoMercator()
-        .scale(100)
-        .translate([chartWidth / 2, chartHeight /2])
+        .fitSize([chartWidth - 20, chartHeight - 70], SPEX.mercator.topoJsonDimensions)
     );
   }
 
