@@ -3,7 +3,7 @@ import es6Promise from 'es6-promise';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-import Calculations from './calculations';
+//import Calculations from './calculations';
 import Map from './map';
 
 es6Promise.polyfill();
@@ -58,7 +58,7 @@ class MeteoriteMap extends Component {
       <div className="meteorite-map row">
         <div className="column small-12">
           <h1 className="text-center">Map of Meteorite Landings Across the World</h1>
-            <Calculations />
+            {/*<Calculations />*/}
             <Map
               strikeData={strikeData}
             />

@@ -17,40 +17,77 @@ import SPEX from '../data/meteorite-map.spex';
       - topojson --simplify-proportion .08 --id-property SU_A3 -p name=NAME -o countries.json units.json */
 import topoJsonData from '../data/countries.topo.json';
 
-const chartWidth = 1200;
-const chartHeight = chartWidth * 0.7;
-
 class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      chartHeight: null,
+      chartWidth: null,
       countriesData: [],
       currentStrike: null,
     }
+
+    this.handleResize = this.handleResize.bind(this);
   }
 
   componentDidMount() {
+    this.calculateWidth();
+    addEventListener('resize', this.handleResize)
     this.setState({
       countriesData: feature(topoJsonData, topoJsonData.objects.units).features,
     });
   }
 
+  componentWillUnmount() {
+    removeEventListener('resize', this.handleResize);
+  }
+
+  calculateWidth() {
+    const containerComputedStyles = getComputedStyle(this.graphContainer);
+    const containerDimensions = {
+      width: containerComputedStyles['width'],
+      paddingLeft: containerComputedStyles['padding-left'],
+      paddingRight: containerComputedStyles['padding-right']
+    }
+
+    // get rid of 'px'
+    for (let property in containerDimensions) {
+      containerDimensions[property] = containerDimensions[property].substr(0, containerDimensions[property].length - 2);
+    }
+    let { paddingLeft, paddingRight, width } = containerDimensions;
+    width = width - paddingLeft - paddingRight;
+    this.setState({
+      chartHeight: width * 0.7,
+      chartWidth: width,
+    });
+  }
+
+  handleResize() {
+    this.calculateWidth();
+  }
+
   mapProjection() {
+    const { chartHeight, chartWidth } = this.state;
+
     return (
       d3GeoMercator()
-        .fitSize([chartWidth - 20, chartHeight - 70], SPEX.mercator.topoJsonDimensions)
+        // trial and error approach to find proper values to scale chart nicely
+        .fitSize([chartWidth, chartHeight - (40 * (chartWidth * 0.0015))], SPEX.mercator.topoJsonDimensions)
     );
   }
 
   render() {
+    const { chartHeight, chartWidth } = this.state;
     const { strikeData } = this.props;
     const { countriesData } = this.state;
 
     const strikeAmount = strikeData.length;
 
      return (
-      <div className="map" style={{height:chartHeight, position: 'relative', width: chartWidth}}>
-        <svg style={{background: 'lightgray', height: chartHeight, width: chartWidth}}>
+      <div
+        ref={(el) => this.graphContainer = el}
+        className="map" style={{height: '100%', position: 'relative', width: '100%'}}>
+        <svg style={{background: 'lightgray', height: chartHeight, width: '100%'}}>
           <g>
             {countriesData.map((countryDatum, index) => (
               <path
@@ -62,7 +99,7 @@ class Map extends Component {
               />
             ))}
           </g>
-          <g>
+         {<g>
             {strikeData.map((strikeDatum, index) => {
               const coords = this.mapProjection()(strikeDatum.coordinates);
               let radius = strikeDatum.mass * 0.00005;
@@ -79,7 +116,7 @@ class Map extends Component {
                 />
               )
             })}
-          </g>
+          </g>}
         </svg>
       </div>
     );
