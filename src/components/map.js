@@ -19,6 +19,7 @@ class Map extends Component {
     super(props);
     this.state = {
       countriesData: [],
+      currentStrike: null,
     }
   }
 
@@ -28,7 +29,7 @@ class Map extends Component {
     });
   }
 
-  setupMap() {
+  mapProjection() {
     return (
       d3GeoMercator()
         .scale(100)
@@ -40,20 +41,39 @@ class Map extends Component {
     const { strikeData } = this.props;
     const { countriesData } = this.state;
 
+    const strikeAmount = strikeData.length;
+
      return (
       <div className="map" style={{height:chartHeight, position: 'relative', width: chartWidth}}>
         <svg style={{background: 'lightgray', height: chartHeight, width: chartWidth}}>
           <g>
             {countriesData.map((countryDatum, index) => (
               <path
-                // index as key is ok, as topojson data is served from static file
                 key={index}
-                d={d3GeoPath(this.setupMap())(countryDatum)}
+                d={d3GeoPath(this.mapProjection())(countryDatum)}
                 fill="lightblue"
                 stroke="gray"
                 strokeWidth="0.5"
               />
             ))}
+          </g>
+          <g>
+            {strikeData.map((strikeDatum, index) => {
+              const coords = this.mapProjection()(strikeDatum.coordinates);
+              let radius = strikeDatum.mass * 0.00005;
+              if (radius > 100) {
+                radius = radius / 10;
+              }
+              return (
+                <circle
+                  cx={coords[0]}
+                  cy={coords[1]}
+                  fill={`rgba(38,50,56,${1 / strikeAmount * index})`}
+                  key={strikeDatum.id}                   
+                  r={radius}
+                />
+              )
+            })}
           </g>
         </svg>
       </div>

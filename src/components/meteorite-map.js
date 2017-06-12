@@ -36,7 +36,16 @@ class MeteoriteMap extends Component {
   prepareStrikeData(data) {
     let strikeData = [];
     data.features.map((feature) => {
-      strikeData.push(feature);
+      if (feature.geometry) {
+        let strikeDatum = {
+          coordinates: feature.geometry.coordinates,
+          id: feature.properties.id,
+          mass: feature.properties.mass,
+          name: feature.properties.name,
+          year: feature.properties.year,
+        };
+        strikeData.push(strikeDatum);
+      }
     });
     return strikeData;   
   }
