@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 //import Calculations from './calculations';
-import Map from './map';
+import MapWithResizeHandling from './map-with-resize-handling';
 
 es6Promise.polyfill();
 const axiosConfig = axios.create({
@@ -59,7 +59,7 @@ class MeteoriteMap extends Component {
         <div className="column small-12">
           <h1 className="text-center">Map of Meteorite Landings Across the World</h1>
             {/*<Calculations />*/}
-            <Map
+            <MapWithResizeHandling
               strikeData={strikeData}
             />
         </div>
