@@ -56,6 +56,7 @@ class MeteoriteMap extends Component {
     axios.get('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/meteorite-strike-data.json')
     .then((data) => {
       this.strikeData = this.prepareStrikeData(data.data);
+      this.strikeData = this.sortStrikeData(this.strikeData);
       this.setState({
         currentStrikeData: this.strikeData,
       })
@@ -83,7 +84,7 @@ class MeteoriteMap extends Component {
 
   prepareStrikeData(data) {
     let strikeData = [];
-    const strikeAmount = 988;
+    const strikeAmount = 953;
 
     data.features.map((feature, index) => {
       if (feature.geometry && feature.properties.mass !== null && feature.properties.year !== null) {
@@ -91,20 +92,25 @@ class MeteoriteMap extends Component {
           coordinates: feature.geometry.coordinates,
           id: feature.properties.id,
           fill: `rgba(38,50,56,${1 / strikeAmount * index})`,
-          mass: feature.properties.mass,
+          mass: Number(feature.properties.mass),
           name: feature.properties.name,
-          radius: feature.properties.mass * 0.00005,
+          radius: feature.properties.mass * 0.0001,
           year: feature.properties.year.substr(0, 4),
         };
-        if (strikeDatum.radius > 100) {
-          strikeDatum.radius = strikeDatum.radius / 10;
-        }
-        if (strikeDatum.year > 1000) {
+        // Get rid of outlier values
+        if (strikeDatum.year > 1000 && strikeDatum.mass < 1000000) {
           strikeData.push(strikeDatum);
         }
       }
     });
     return strikeData;   
+  }
+
+  // Sort strike Data for proper display in SVG (order is important)
+  sortStrikeData(data) {
+    return data.sort((a, b) => {
+      return b.mass - a.mass
+    });
   }
   
   render() {

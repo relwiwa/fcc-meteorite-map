@@ -99,16 +99,16 @@ class MapProjection extends Component {
                   cx={strikesProjection[index][0]}
                   cy={strikesProjection[index][1]}
                   fill={strikeDatum.fill}
-                  onMouseEnter={() => this.setState({ currentStrike: strikeDatum.id })}
+                  onMouseEnter={() => this.setState({ currentStrike: strikeDatum })}
                   onMouseLeave={() => this.setState({ currentStrike: null })}
-                  r={strikeDatum.radius}
+                  r={strikeDatum.radius * (chartWidth/2 * 0.003)}
                 />
               )
             })}
           </g>}
         </svg>
         <div>
-          {currentStrike !== null ? currentStrike : null}
+          {currentStrike !== null ? currentStrike.mass : null}
         </div>
       </div>
     );
