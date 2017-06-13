@@ -8,9 +8,9 @@ import { geoMercator as d3GeoMercator, geoPath as d3GeoPath } from 'd3-geo';
 
 import SPEX from '../data/meteorite-map.spex';
 
-import '../styles/map.scss';
+import '../styles/map-projection.scss';
 
-class Map extends Component {
+class MapProjection extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -74,7 +74,9 @@ class Map extends Component {
 
      return (
       <div
-        className="map" style={{height: '100%', position: 'relative', width: '100%'}}>
+        className="map-projection"
+        style={{height: '100%', position: 'relative', width: '100%'}}
+      >
         <svg style={{background: 'lightgray', height: chartHeight, width: '100%'}}>
           <g>
             {countriesProjection.map((projection, index) => {
@@ -113,4 +115,4 @@ class Map extends Component {
   }
 }
 
-export default Map;
+export default MapProjection;

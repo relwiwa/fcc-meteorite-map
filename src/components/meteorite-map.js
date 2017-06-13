@@ -4,8 +4,11 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { feature } from 'topojson-client';
 
-//import Calculations from './calculations';
-import MapWithResizeHandling from './map-with-resize-handling';
+import Calculations from './calculations';
+import MapProjectionWithResizeHandling from './map-projection-with-resize-handling';
+import MeteoriteMapFilter from './meteorite-map-filter';
+
+import SPEX from '../data/meteorite-map.spex';
 
 /*  Origin of data:
     - SHP-file from http://www.naturalearthdata.com
@@ -27,7 +30,8 @@ class MeteoriteMap extends Component {
 
     this.state = {
       countriesData: feature(topoJsonData, topoJsonData.objects.units).features,
-      strikeData: [],
+      currentYearFilter: null,
+      currentStrikeData: [],
     }
   }
   
@@ -35,24 +39,54 @@ class MeteoriteMap extends Component {
     this.getStrikeData();
   }
 
+  filterStrikeDataByYear(filterBy) {
+    const { strikeData } = this;
+
+    const filteredData = strikeData.filter((item) => {
+      if (item.year >= filterBy && item.year < filterBy + 100) {
+        return true;
+      }
+      return false;
+    });
+
+    return filteredData;
+  }
+
   getStrikeData() {
     axios.get('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/meteorite-strike-data.json')
     .then((data) => {
-      const strikeData = this.prepareStrikeData(data.data);
+      this.strikeData = this.prepareStrikeData(data.data);
       this.setState({
-        strikeData: strikeData,
+        currentStrikeData: this.strikeData,
       })
     });
   }
 
+  handleFilterByYear(filterBy) {
+    const { currentYearFilter } = this.state;
 
+    if (filterBy !== currentYearFilter) {
+      let filteredData;
+      if (filterBy === null) {
+        filteredData = this.strikeData;
+      }
+      else {
+        filteredData = this.filterStrikeDataByYear(filterBy);
+      }
+
+      this.setState({
+        currentStrikeData: filteredData,
+        currentYearFilter: filterBy,
+      });
+    }
+  }
 
   prepareStrikeData(data) {
     let strikeData = [];
     const strikeAmount = 988;
 
     data.features.map((feature, index) => {
-      if (feature.geometry) {
+      if (feature.geometry && feature.properties.mass !== null && feature.properties.year !== null) {
         let strikeDatum = {
           coordinates: feature.geometry.coordinates,
           id: feature.properties.id,
@@ -60,28 +94,37 @@ class MeteoriteMap extends Component {
           mass: feature.properties.mass,
           name: feature.properties.name,
           radius: feature.properties.mass * 0.00005,
-          year: feature.properties.year,
+          year: feature.properties.year.substr(0, 4),
         };
         if (strikeDatum.radius > 100) {
           strikeDatum.radius = strikeDatum.radius / 10;
         }
-        strikeData.push(strikeDatum);
+        if (strikeDatum.year > 1000) {
+          strikeData.push(strikeDatum);
+        }
       }
     });
     return strikeData;   
   }
   
   render() {
-    const { countriesData, strikeData } = this.state;
+    const { countriesData, currentYearFilter, currentStrikeData } = this.state;
 
     return (
       <div className="meteorite-map row">
         <div className="column small-12">
-          <h1 className="text-center">Map of Meteorite Landings Across the World</h1>
-            {/*<Calculations />*/}
-            <MapWithResizeHandling
+          <h1 className="text-center">Map of Meteorite Strikes Across the World</h1>
+            {/*<Calculations
+              strikeData={currentStrikeData}
+            />*/}
+            <MeteoriteMapFilter
+              currentFilter={currentYearFilter}
+              filterCategories={SPEX.strikes.yearsFilter}
+              onUpdateFilter={(filterData) => this.handleFilterByYear(filterData)}
+            />
+            <MapProjectionWithResizeHandling
               countriesData={countriesData}
-              strikeData={strikeData}
+              strikeData={currentStrikeData}
             />
         </div>
       </div>
