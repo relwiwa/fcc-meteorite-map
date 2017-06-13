@@ -5,36 +5,35 @@
 
 import React, { Component } from 'react';
 import { geoMercator as d3GeoMercator, geoPath as d3GeoPath } from 'd3-geo';
-import { feature } from 'topojson-client';
 
 import SPEX from '../data/meteorite-map.spex';
 
-/*  Origin of data:
-    - SHP-file from http://www.naturalearthdata.com
-    - Converted using ogr2ogr to geoJson and then to topoJson
-    - Antarctica was extracted
-    - Commands:
-      - ogr2ogr -f GeoJSON -where "ISO_A2 NOT IN ('AQ')" units.json ne_50m_admin_0_countries_lakes.shp
-      - topojson --simplify-proportion .08 --id-property SU_A3 -p name=NAME -o countries.json units.json */
-import topoJsonData from '../data/countries.topo.json';
+import '../styles/map.scss';
 
 class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      countriesData: [],
+      countriesProjection: [],
       currentStrike: null,
+      strikesProjection: [],
     }
   }
 
   componentDidMount() {
-    this.setState({
-      countriesData: feature(topoJsonData, topoJsonData.objects.units).features,
-    });
+    const { chartHeight, chartWidth } = this.props;
+
+    this.updateCountriesProjection(chartHeight, chartWidth);
   }
 
-  mapProjection() {
-    const { chartHeight, chartWidth } = this.props;
+  componentWillReceiveProps(nextProps) {
+    const { chartHeight, chartWidth, strikeData } = nextProps;
+
+    this.updateCountriesProjection(chartHeight, chartWidth);
+    this.updateStrikeProjection(chartHeight, chartWidth, strikeData);
+  }
+
+  mapProjection(chartHeight, chartWidth) {
     const { mercator } = SPEX;
 
     return (
@@ -44,9 +43,32 @@ class Map extends Component {
     );
   }
 
+  updateCountriesProjection(chartHeight, chartWidth) {
+    const { countriesData } = this.props;
+
+    let countriesProjection = countriesData.map((countryDatum) => {
+      return d3GeoPath(this.mapProjection(chartHeight, chartWidth))(countryDatum);
+    });
+
+    this.setState({
+      countriesProjection: countriesProjection,
+    });
+  }
+
+  updateStrikeProjection(chartHeight, chartWidth, strikeData) {
+    let strikesProjection = strikeData.map((strikeDatum) => {
+      return this.mapProjection(chartHeight, chartWidth)(strikeDatum.coordinates);
+    });
+
+    this.setState({
+      strikesProjection: strikesProjection,
+    });
+  }
+
+
   render() {
     const { chartHeight, chartWidth, strikeData } = this.props;
-    const { countriesData, currentStrike } = this.state;
+    const { countriesProjection, currentStrike, strikesProjection } = this.state;
 
     const strikeAmount = strikeData.length;
 
@@ -55,35 +77,37 @@ class Map extends Component {
         className="map" style={{height: '100%', position: 'relative', width: '100%'}}>
         <svg style={{background: 'lightgray', height: chartHeight, width: '100%'}}>
           <g>
-            {countriesData.map((countryDatum, index) => (
-              <path
-                key={index}
-                d={d3GeoPath(this.mapProjection())(countryDatum)}
-                fill="lightblue"
-                stroke="gray"
-                strokeWidth="0.5"
-              />
-            ))}
+            {countriesProjection.map((projection, index) => {
+              return (
+                <path
+                  key={index}
+                  d={projection}
+                  fill="lightblue"
+                  stroke="gray"
+                  strokeWidth="0.5"
+                />
+              )
+            })}
           </g>
          {<g>
             {strikeData.map((strikeDatum, index) => {
-              const coords = this.mapProjection()(strikeDatum.coordinates);
-              let radius = strikeDatum.mass * 0.00005;
-              if (radius > 100) {
-                radius = radius / 10;
-              }
               return (
                 <circle
-                  cx={coords[0]}
-                  cy={coords[1]}
-                  fill={`rgba(38,50,56,${1 / strikeAmount * index})`}
                   key={strikeDatum.id}
-                  r={radius}
+                  cx={strikesProjection[index][0]}
+                  cy={strikesProjection[index][1]}
+                  fill={strikeDatum.fill}
+                  onMouseEnter={() => this.setState({ currentStrike: strikeDatum.id })}
+                  onMouseLeave={() => this.setState({ currentStrike: null })}
+                  r={strikeDatum.radius}
                 />
               )
             })}
           </g>}
         </svg>
+        <div>
+          {currentStrike !== null ? currentStrike : null}
+        </div>
       </div>
     );
   }

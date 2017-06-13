@@ -1,0 +1,10 @@
+.map {
+  circle {
+    stroke: gray;
+    stroke-width: 2;
+  }
+
+  circle:hover {
+    stroke: orange;
+  }
+}
