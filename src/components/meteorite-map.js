@@ -6,7 +6,7 @@ import { feature } from 'topojson-client';
 
 import Calculations from './calculations';
 import MapProjectionWithResizeHandling from './map-projection-with-resize-handling';
-import MeteoriteMapFilter from './meteorite-map-filter';
+import MapFilter from './map-filter';
 
 import SPEX from '../data/meteorite-map.spex';
 
@@ -123,7 +123,7 @@ class MeteoriteMap extends Component {
             {/*<Calculations
               strikeData={currentStrikeData}
             />*/}
-            <MeteoriteMapFilter
+            <MapFilter
               currentFilter={currentYearFilter}
               filterCategories={SPEX.strikes.yearsFilter}
               onUpdateFilter={(filterData) => this.handleFilterByYear(filterData)}

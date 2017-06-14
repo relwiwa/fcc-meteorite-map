@@ -1,10 +1,12 @@
 import React from 'react';
 
-const MeteoriteMapFilter = (props) => {
+import '../styles/map-filter.scss';
+
+const MapFilter = (props) => {
   const { currentFilter, filterCategories, onUpdateFilter } = props;
 
   return (
-    <ul className="meteorite-map-navigation menu align-center">
+    <ul className="map-filter menu align-center">
       <li
         className={currentFilter === null ? 'is-active' : null}
       >
@@ -22,4 +24,4 @@ const MeteoriteMapFilter = (props) => {
   );
 }
 
-export default MeteoriteMapFilter;
+export default MapFilter;
