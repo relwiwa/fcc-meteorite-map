@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { geoMercator as d3GeoMercator, geoPath as d3GeoPath } from 'd3-geo';
 import { zoom as d3Zoom,  zoomIdentity as d3ZoomIdentity } from 'd3-zoom';
 import { event as d3Event, select as d3Select, selectAll as d3SelectAll } from 'd3-selection';
+
 import SPEX from '../data/meteorite-map.spex';
 
 import '../styles/map-projection.scss';
@@ -38,19 +39,16 @@ class MapProjection extends Component {
   }
 
   addZoom() {
-    console.log('addZoom');
     const svg = d3Select(this.svgContentContainer)
 
     const zoom = d3Zoom()
       .scaleExtent([1, 8])
       .on('zoom', () => {
-        console.log('zoom');
         svg.attr('transform', d3Event.transform);
         if (!this.state.zoomed) {
           this.setState({ zoomed: true });
         }
       });
-    console.log(zoom);
 
     svg.call(zoom);
 
@@ -88,7 +86,10 @@ class MapProjection extends Component {
 
   updateStrikeProjection(chartHeight, chartWidth, strikeData) {
     let strikesProjection = strikeData.map((strikeDatum) => {
-      return this.mapProjection(chartHeight, chartWidth)(strikeDatum.coordinates);
+      return {
+        projection: this.mapProjection(chartHeight, chartWidth)(strikeDatum.coordinates),
+        radius: strikeDatum.radius * (chartWidth/2 * 0.003)
+      }
     });
 
     this.setState({
@@ -124,15 +125,16 @@ class MapProjection extends Component {
             </g>
             <g>
               {strikeData.map((strikeDatum, index) => {
+                const projected = strikesProjection[index];
                 return (
                   <circle
                     key={strikeDatum.id}
-                    cx={strikesProjection[index][0]}
-                    cy={strikesProjection[index][1]}
+                    cx={projected.projection[0]}
+                    cy={projected.projection[1]}
                     fill={strikeDatum.fill}
                     onMouseEnter={() => this.setState({ currentStrike: strikeDatum })}
                     onMouseLeave={() => this.setState({ currentStrike: null })}
-                    r={strikeDatum.radius * (chartWidth/2 * 0.003)}
+                    r={projected.radius}
                   />
                 )
               })}
