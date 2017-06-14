@@ -10,6 +10,7 @@ import { zoom as d3Zoom,  zoomIdentity as d3ZoomIdentity } from 'd3-zoom';
 import { event as d3Event, select as d3Select, selectAll as d3SelectAll } from 'd3-selection';
 
 import MeteoriteMapCountries from './meteorite-map-countries';
+import MeteoriteMapStrikes from './meteorite-map-strikes';
 import MeteoriteMapTooltip from './meteorite-map-tooltip';
 
 import SPEX from '../data/meteorite-map.spex';
@@ -115,23 +116,12 @@ class MapProjection extends Component {
             <MeteoriteMapCountries
               countriesProjection={countriesProjection}
             />
-            <g className={(currentCenturyFilter !== null) ? 'centuryFilter' + currentCenturyFilter : 'centuryFilterAll'}>
-              {strikeData.map((strikeDatum, index) => {
-                const projected = strikesProjection[index];
-                return (
-                  <circle
-                    className={'century' + strikeDatum.century}
-                    cx={projected.projection[0]}
-                    cy={projected.projection[1]}
-                    fill={strikeDatum.fill}
-                    key={strikeDatum.id}
-                    onMouseEnter={() => this.setState({ currentStrike: strikeDatum })}
-                    onMouseLeave={() => this.setState({ currentStrike: null })}
-                    r={projected.radius}
-                  />
-                )
-              })}
-            </g>
+            <MeteoriteMapStrikes
+              currentCenturyFilter={currentCenturyFilter}
+              onUpdateCurrentStrike={(strikeDatum) => this.setState({ currentStrike: strikeDatum })}
+              strikeData={strikeData}
+              strikesProjection={strikesProjection}
+            />
           </g>
         </svg>
         <div style={{position: 'absolute', bottom:0, left: 0, zIndex:501}}>

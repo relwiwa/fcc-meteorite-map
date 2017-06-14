@@ -1,0 +1,22 @@
+@import './meteorite-map.general.scss';
+
+$centuries: 1400 1500 1600 1700 1800 1900 2000;
+
+@each $century in $centuries {
+  g.centuryFilter#{$century}, g.centuryFilterAll {
+    circle.century#{$century} {
+      display:block;
+    }
+  }
+}
+
+circle {
+  display:none;
+  stroke: $colorBorders;
+  stroke-width: 1;
+}
+
+circle:hover {
+  stroke: $colorSecondary;
+  stroke-width: 2;
+}
