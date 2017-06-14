@@ -23,6 +23,9 @@ function withResizeHandling(WrappedComponent, ratioFactor) {
 
     componentWillUnmount() {
       removeEventListener('resize', this.handleResize);
+      if (this.resizeTimeout !== null) {
+        clearTimeout(this.resizeTimeout);
+      }
     }    
 
     calculateWidth() {
@@ -39,14 +42,22 @@ function withResizeHandling(WrappedComponent, ratioFactor) {
       }
       let { paddingLeft, paddingRight, width } = containerDimensions;
       width = width - paddingLeft - paddingRight;
-      this.setState({
-        chartHeight: width * ratioFactor,
-        chartWidth: width,
-      })    
+      if (width !== this.state.chartWidth) {
+        this.setState({
+          chartHeight: width * ratioFactor,
+          chartWidth: width,
+        })    
+      }
     }
 
     handleResize() {
-      this.calculateWidth();
+      if (this.resizeTimeout === null) {
+        this.resizeTimeout = setTimeout(() => this.calculateWidth(), 50);
+      }
+      else {
+        clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(() => this.calculateWidth(), 50);
+      }
     }
 
     render() {
