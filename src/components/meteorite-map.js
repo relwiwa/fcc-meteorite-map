@@ -30,57 +30,13 @@ class MeteoriteMap extends Component {
 
     this.state = {
       countriesData: feature(topoJsonData, topoJsonData.objects.units).features,
-      currentYearFilter: null,
+      currentCenturyFilter: null,
       currentStrikeData: [],
     }
   }
   
   componentWillMount() {
     this.getStrikeData();
-  }
-
-  filterStrikeDataByYear(filterBy) {
-    const { strikeData } = this;
-
-    /*  filter polyfill from MDN (IE9):
-        https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter */
-    if (!Array.prototype.filter) {
-      Array.prototype.filter = function(fun/*, thisArg*/) {
-        if (this === void 0 || this === null) {
-          throw new TypeError();
-        }
-        var t = Object(this);
-        var len = t.length >>> 0;
-        if (typeof fun !== 'function') {
-          throw new TypeError();
-        }
-        var res = [];
-        var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
-        for (var i = 0; i < len; i++) {
-          if (i in t) {
-            var val = t[i];
-            // NOTE: Technically this should Object.defineProperty at
-            //       the next index, as push can be affected by
-            //       properties on Object.prototype and Array.prototype.
-            //       But that method's new, and collisions should be
-            //       rare, so use the more-compatible alternative.
-            if (fun.call(thisArg, val, i, t)) {
-              res.push(val);
-            }
-          }
-        }
-        return res;
-      };
-    }
-
-    const filteredData = strikeData.filter((item) => {
-      if (item.year >= filterBy && item.year < filterBy + 100) {
-        return true;
-      }
-      return false;
-    });
-
-    return filteredData;
   }
 
   getStrikeData() {
@@ -94,23 +50,12 @@ class MeteoriteMap extends Component {
     });
   }
 
-  handleFilterByYear(filterBy) {
+  handleFilterByCentury(filterBy) {
     const { currentYearFilter } = this.state;
 
-    if (filterBy !== currentYearFilter) {
-      let filteredData;
-      if (filterBy === null) {
-        filteredData = this.strikeData;
-      }
-      else {
-        filteredData = this.filterStrikeDataByYear(filterBy);
-      }
-
-      this.setState({
-        currentStrikeData: filteredData,
-        currentYearFilter: filterBy,
-      });
-    }
+    this.setState({
+      currentCenturyFilter: filterBy,
+    });
   }
 
   prepareStrikeData(data) {
@@ -119,14 +64,16 @@ class MeteoriteMap extends Component {
 
     data.features.map((feature, index) => {
       if (feature.geometry && feature.properties.mass !== null && feature.properties.year !== null) {
+        const year = feature.properties.year.substr(0, 4);
         let strikeDatum = {
+          century: Number(year.substr(0, 2) + '00'),
           coordinates: feature.geometry.coordinates,
           id: feature.properties.id,
           fill: `rgba(38,50,56,${1 / strikeAmount * index})`,
           mass: Number(feature.properties.mass),
           name: feature.properties.name,
           radius: feature.properties.mass * 0.0001,
-          year: feature.properties.year.substr(0, 4),
+          year: year,
         };
         // Get rid of outlier values
         if (strikeDatum.year > 1000 && strikeDatum.mass < 1000000) {
@@ -145,7 +92,7 @@ class MeteoriteMap extends Component {
   }
   
   render() {
-    const { countriesData, currentYearFilter, currentStrikeData } = this.state;
+    const { countriesData, currentCenturyFilter, currentStrikeData } = this.state;
 
     return (
       <div className="meteorite-map row">
@@ -155,12 +102,13 @@ class MeteoriteMap extends Component {
               strikeData={currentStrikeData}
             />*/}
             <MapFilter
-              currentFilter={currentYearFilter}
-              filterCategories={SPEX.strikes.yearsFilter}
-              onUpdateFilter={(filterData) => this.handleFilterByYear(filterData)}
+              currentFilter={currentCenturyFilter}
+              filterCategories={SPEX.strikes.centuriesFilter}
+              onUpdateFilter={(filterData) => this.handleFilterByCentury(filterData)}
             />
             <MapProjectionWithResizeHandling
               countriesData={countriesData}
+              currentCenturyFilter={currentCenturyFilter}
               strikeData={currentStrikeData}
             />
         </div>

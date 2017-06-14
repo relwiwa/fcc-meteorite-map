@@ -99,7 +99,7 @@ class MapProjection extends Component {
 
 
   render() {
-    const { chartHeight, chartWidth, strikeData } = this.props;
+    const { chartHeight, chartWidth, currentCenturyFilter, strikeData } = this.props;
     const { countriesProjection, currentStrike, strikesProjection, zoomed } = this.state;
 
     return (
@@ -114,24 +114,25 @@ class MapProjection extends Component {
               {countriesProjection.map((projection, index) => {
                 return (
                   <path
-                    key={index}
                     d={projection}
                     fill="lightblue"
+                    key={index}
                     stroke="gray"
                     strokeWidth="0.5"
                   />
                 )
               })}
             </g>
-            <g>
+            <g className={(currentCenturyFilter !== null) ? 'centuryFilter' + currentCenturyFilter : 'centuryFilterAll'}>
               {strikeData.map((strikeDatum, index) => {
                 const projected = strikesProjection[index];
                 return (
                   <circle
-                    key={strikeDatum.id}
+                    className={'century' + strikeDatum.century}
                     cx={projected.projection[0]}
                     cy={projected.projection[1]}
                     fill={strikeDatum.fill}
+                    key={strikeDatum.id}
                     onMouseEnter={() => this.setState({ currentStrike: strikeDatum })}
                     onMouseLeave={() => this.setState({ currentStrike: null })}
                     r={projected.radius}
@@ -141,12 +142,12 @@ class MapProjection extends Component {
             </g>
           </g>
         </svg>
-        <div style={{position: 'absolute', top:0, left: 0, zIndex:501}}>
+        <div style={{position: 'absolute', bottom:0, left: 0, zIndex:501}}>
           <a
             className={'button' + (this.state.zoomed ? '' : ' disabled')}
             onClick={zoomed ? () => this.resetZoom() : null}
           >Reset Zoom</a>
-        </div>
+        </div>        
         {/*<div>
           {currentStrike !== null ? currentStrike.mass : null}
         </div>*/}

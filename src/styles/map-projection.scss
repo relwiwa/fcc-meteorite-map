@@ -1,21 +1,31 @@
 .map-projection {
   margin-top:15px;
   
-
   a.button {
     position:relative;
-    top: 10px;
+    bottom: 0px;
     left: 10px;
     font-size:0.6rem;
     padding:0.85em 1em;
     @media screen and (min-width: 40em) {
-      top:25px;
+      bottom:0px;
       left: 25px;
       font-size:0.9rem;
     }
   }
 
+  $centuries: 1400 1500 1600 1700 1800 1900 2000;
+
+  @each $century in $centuries {
+    g.centuryFilter#{$century}, g.centuryFilterAll {
+      circle.century#{$century} {
+        display:block;
+      }
+    }
+  }
+
   circle {
+    display:none;
     stroke: gray;
     stroke-width: 1;
   }
