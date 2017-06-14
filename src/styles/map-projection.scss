@@ -1,3 +1,5 @@
+@import './meteorite-map.general.scss';
+
 .map-projection {
   margin-top:15px;
   
@@ -26,13 +28,19 @@
 
   circle {
     display:none;
-    stroke: gray;
+    stroke: $colorBorders;
     stroke-width: 1;
   }
 
   circle:hover {
-    stroke: orange;
+    stroke: $colorSecondary;
     stroke-width: 2;
+  }
+
+  path {
+    fill: $colorCountries;
+    stroke: $colorBorders;
+    stroke-width: 0.5;    
   }
 
 }

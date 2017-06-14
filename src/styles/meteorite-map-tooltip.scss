@@ -1,0 +1,12 @@
+@import './meteorite-map.general.scss';
+
+.meteorite-map-tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 0;
+  z-index: 501;
+  color: $colorPrimary;
+  background: $colorTooltipBackground;  
+}

@@ -9,6 +9,8 @@ import { geoMercator as d3GeoMercator, geoPath as d3GeoPath } from 'd3-geo';
 import { zoom as d3Zoom,  zoomIdentity as d3ZoomIdentity } from 'd3-zoom';
 import { event as d3Event, select as d3Select, selectAll as d3SelectAll } from 'd3-selection';
 
+import MeteoriteMapTooltip from './meteorite-map-tooltip';
+
 import SPEX from '../data/meteorite-map.spex';
 
 import '../styles/map-projection.scss';
@@ -115,10 +117,7 @@ class MapProjection extends Component {
                 return (
                   <path
                     d={projection}
-                    fill="lightblue"
                     key={index}
-                    stroke="gray"
-                    strokeWidth="0.5"
                   />
                 )
               })}
@@ -148,6 +147,9 @@ class MapProjection extends Component {
             onClick={zoomed ? () => this.resetZoom() : null}
           >Reset Zoom</a>
         </div>        
+        {currentStrike !== null && <MeteoriteMapTooltip
+          currentStrike={currentStrike}
+        />}
         {/*<div>
           {currentStrike !== null ? currentStrike.mass : null}
         </div>*/}
