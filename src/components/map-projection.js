@@ -38,16 +38,19 @@ class MapProjection extends Component {
   }
 
   addZoom() {
+    console.log('addZoom');
     const svg = d3Select(this.svgContentContainer)
 
     const zoom = d3Zoom()
       .scaleExtent([1, 8])
       .on('zoom', () => {
+        console.log('zoom');
         svg.attr('transform', d3Event.transform);
         if (!this.state.zoomed) {
           this.setState({ zoomed: true });
         }
       });
+    console.log(zoom);
 
     svg.call(zoom);
 
@@ -101,9 +104,9 @@ class MapProjection extends Component {
     return (
       <div
         className="map-projection"
-        style={{height: '100%', position: 'relative', width: '100%'}}
+        style={{height: chartHeight, position: 'relative', width: chartWidth}}
       >
-        <svg style={{background: 'lightgray', height: chartHeight, width: '100%', position: 'absolute', top: 0, left: 0}}
+        <svg style={{background: 'lightgray', zIndex: 500, height: chartHeight, width: '100%', position: 'absolute', top: 0, left: 0}}
         >
           <g ref={(el) => this.svgContentContainer = el}>
             <g>
@@ -136,7 +139,7 @@ class MapProjection extends Component {
             </g>
           </g>
         </svg>
-        <div style={{position: 'absolute', top:0, left: 0, width: '100%', height:'100%'}}>
+        <div style={{position: 'absolute', top:0, left: 0, zIndex:501}}>
           <a
             className={'button' + (this.state.zoomed ? '' : ' disabled')}
             onClick={zoomed ? () => this.resetZoom() : null}
