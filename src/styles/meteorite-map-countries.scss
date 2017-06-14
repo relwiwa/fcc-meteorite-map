@@ -1,0 +1,9 @@
+@import './meteorite-map.general.scss';
+
+.meteorite-map-countries {
+  path {
+    fill: $colorCountries;
+    stroke: $colorBorders;
+    stroke-width: 0.5;    
+  }
+}

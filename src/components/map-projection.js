@@ -9,6 +9,7 @@ import { geoMercator as d3GeoMercator, geoPath as d3GeoPath } from 'd3-geo';
 import { zoom as d3Zoom,  zoomIdentity as d3ZoomIdentity } from 'd3-zoom';
 import { event as d3Event, select as d3Select, selectAll as d3SelectAll } from 'd3-selection';
 
+import MeteoriteMapCountries from './meteorite-map-countries';
 import MeteoriteMapTooltip from './meteorite-map-tooltip';
 
 import SPEX from '../data/meteorite-map.spex';
@@ -109,19 +110,11 @@ class MapProjection extends Component {
         className="map-projection"
         style={{height: chartHeight, position: 'relative', width: chartWidth}}
       >
-        <svg style={{background: 'lightgray', zIndex: 500, height: chartHeight, width: '100%', position: 'absolute', top: 0, left: 0}}
-        >
+        <svg style={{background: 'lightgray', zIndex: 500, height: chartHeight, width: '100%', position: 'absolute', top: 0, left: 0}}>
           <g ref={(el) => this.svgContentContainer = el}>
-            <g>
-              {countriesProjection.map((projection, index) => {
-                return (
-                  <path
-                    d={projection}
-                    key={index}
-                  />
-                )
-              })}
-            </g>
+            <MeteoriteMapCountries
+              countriesProjection={countriesProjection}
+            />
             <g className={(currentCenturyFilter !== null) ? 'centuryFilter' + currentCenturyFilter : 'centuryFilterAll'}>
               {strikeData.map((strikeDatum, index) => {
                 const projected = strikesProjection[index];
