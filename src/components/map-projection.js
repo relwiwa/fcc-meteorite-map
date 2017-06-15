@@ -42,6 +42,11 @@ class MapProjection extends Component {
     this.updateStrikeProjection(chartHeight, chartWidth, strikeData);
   }
 
+  componentWillUnmount() {
+    d3Select(this.svgContentContainer)
+      .on('zoom', null);
+  }
+
   addZoom() {
     const svg = d3Select(this.svgContentContainer)
 
