@@ -45,7 +45,7 @@ class MapProjection extends Component {
   addZoom() {
     const svg = d3Select(this.svgContentContainer)
 
-    const zoom = d3Zoom()
+    this.zoom = d3Zoom()
       .scaleExtent([1, 8])
       .on('zoom', () => {
         svg.attr('transform', d3Event.transform);
@@ -54,7 +54,7 @@ class MapProjection extends Component {
         }
       });
 
-    svg.call(zoom);
+    svg.call(this.zoom);
 
   }
 
@@ -70,7 +70,7 @@ class MapProjection extends Component {
 
   resetZoom() {
     const svg = d3Select(this.svgContentContainer)
-      .attr('transform', 'translate(0,0) scale(1)');
+      .call(this.zoom.transform, d3ZoomIdentity);
     this.setState({
       zoomed: false,
     });
