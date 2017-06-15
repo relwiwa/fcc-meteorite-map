@@ -11,7 +11,7 @@ import { event as d3Event, select as d3Select, selectAll as d3SelectAll } from '
 
 import MeteoriteMapCountries from './meteorite-map-countries';
 import MeteoriteMapStrikes from './meteorite-map-strikes';
-import MeteoriteMapTooltip from './meteorite-map-tooltip';
+import MeteoriteMapMessageBox from './meteorite-map-message-box';
 
 import SPEX from '../data/meteorite-map.spex';
 
@@ -111,6 +111,9 @@ class MapProjection extends Component {
     const { chartHeight, chartWidth, currentCenturyFilter, strikeData } = this.props;
     const { countriesProjection, currentStrike, strikesProjection, zoomed } = this.state;
 
+    const countriesProjected = countriesProjection.length > 0 ? true : false;
+    const strikesProjected = strikeData.length > 0 ? true : false;
+
     return (
       <div
         className="map-projection"
@@ -121,12 +124,12 @@ class MapProjection extends Component {
             <MeteoriteMapCountries
               countriesProjection={countriesProjection}
             />
-            <MeteoriteMapStrikes
+            {countriesProjected && <MeteoriteMapStrikes
               currentCenturyFilter={currentCenturyFilter}
               onUpdateCurrentStrike={(strikeDatum) => this.setState({ currentStrike: strikeDatum })}
               strikeData={strikeData}
               strikesProjection={strikesProjection}
-            />
+            />}
           </g>
         </svg>
         <div style={{position: 'absolute', bottom:0, left: 0, zIndex:501}}>
@@ -134,10 +137,13 @@ class MapProjection extends Component {
             className={'button' + (this.state.zoomed ? '' : ' disabled')}
             onClick={zoomed ? () => this.resetZoom() : null}
           >Reset Zoom</a>
-        </div>        
-        {currentStrike !== null && <MeteoriteMapTooltip
-          currentStrike={currentStrike}
-        />}
+        </div>
+        {(!countriesProjected || strikeData.length === 0) && <MeteoriteMapMessageBox>
+          <span><i className="fa fa-spin fa-pulse fa-spinner"></i> Getting {!countriesProjected ? 'map' : ''} {!countriesProjected && !strikesProjected ? ' and' : ''} {!strikesProjected ? ' meteorite strike' : ''} data</span>
+        </MeteoriteMapMessageBox>}
+        {currentStrike !== null && <MeteoriteMapMessageBox>
+          <b>{currentStrike.name}</b> had a mass of <b>{(currentStrike.mass / 1000)} kg</b> in <b>{currentStrike.year}</b>
+        </MeteoriteMapMessageBox>}
         {/*<div>
           {currentStrike !== null ? currentStrike.mass : null}
         </div>*/}

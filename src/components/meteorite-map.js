@@ -17,7 +17,7 @@ import SPEX from '../data/meteorite-map.spex';
     - Commands:
       - ogr2ogr -f GeoJSON -where "ISO_A2 NOT IN ('AQ')" units.json ne_50m_admin_0_countries_lakes.shp
       - topojson --simplify-proportion .08 --id-property SU_A3 -p name=NAME -o countries.json units.json */
-import topoJsonData from '../data/countries.topo.json';
+//import topoJsonData from '../data/countries.topo.json';
 
 es6Promise.polyfill();
 const axiosConfig = axios.create({
@@ -29,14 +29,25 @@ class MeteoriteMap extends Component {
     super(props);
 
     this.state = {
-      countriesData: feature(topoJsonData, topoJsonData.objects.units).features,
+      countriesData: [],
       currentCenturyFilter: null,
       currentStrikeData: [],
     }
   }
   
   componentWillMount() {
+    this.getTopoJsonData();
     this.getStrikeData();
+  }
+
+  getTopoJsonData() {
+    axios.get('https://relwiwa.github.io/datasets/fcc-meteorite-map/countries.topo.json')
+    .then((data) => {
+      const topoJsonData = data.data;
+      this.setState({
+        countriesData: feature(topoJsonData, topoJsonData.objects.units).features,
+      });
+    });    
   }
 
   getStrikeData() {
