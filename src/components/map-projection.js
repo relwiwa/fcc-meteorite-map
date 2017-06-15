@@ -69,7 +69,7 @@ class MapProjection extends Component {
     return (
       d3GeoMercator()
         // trial and error approach to find proper values to scale chart nicely
-        .fitSize([chartWidth, chartHeight - (40 * (chartWidth * 0.0015))], mercator.topoJsonDimensions)
+        .fitSize([chartWidth, chartHeight - (40 * (chartWidth * 0.0021))], mercator.topoJsonDimensions)
     );
   }
 
