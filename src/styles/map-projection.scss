@@ -3,6 +3,14 @@
 .map-projection {
   margin-top:15px;
   
+  svg {
+    z-index: 500;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border:1px solid $colorBordersLight;
+  }
+
   a.button {
     position:relative;
     bottom: 0px;

@@ -116,7 +116,7 @@ class MapProjection extends Component {
         className="map-projection"
         style={{height: chartHeight, position: 'relative', width: chartWidth}}
       >
-        <svg style={{background: 'lightgray', zIndex: 500, height: chartHeight, width: '100%', position: 'absolute', top: 0, left: 0}}>
+        <svg style={{height: chartHeight, width: '100%'}}>
           <g ref={(el) => this.svgContentContainer = el}>
             <MeteoriteMapCountries
               countriesProjection={countriesProjection}
