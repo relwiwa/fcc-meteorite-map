@@ -96,8 +96,9 @@ class MeteoriteMap extends Component {
 
     return (
       <div className="meteorite-map row">
-        <div className="column small-12">
-          <h1 className="text-center">Map of Meteorite Strikes Across the World</h1>
+        <div className="column small-12 text-center">
+          <h1>Map of Meteorite Strikes Across the World</h1>
+          <p>This is an interactive map displaying meteorite strikes across the world between 1400 up until now.</p>
             {/*<Calculations
               strikeData={currentStrikeData}
             />*/}
