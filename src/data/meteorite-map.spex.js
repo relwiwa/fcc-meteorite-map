@@ -1,6 +1,9 @@
 const SPEX = {
   map: {
-    ratioFactor: 0.6
+    ratioFactor: {
+      small: 0.7,
+      medium: 0.6
+    }
   },
   mercator: {
     topoJsonDimensions: {

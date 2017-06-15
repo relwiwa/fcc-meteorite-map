@@ -40,11 +40,16 @@ function withResizeHandling(WrappedComponent, ratioFactor) {
       for (let property in containerDimensions) {
         containerDimensions[property] = containerDimensions[property].substr(0, containerDimensions[property].length - 2);
       }
+
       let { paddingLeft, paddingRight, width } = containerDimensions;
       width = width - paddingLeft - paddingRight;
+      let height = width * ratioFactor.small;
+      if (width > 500) {
+        height = width * ratioFactor.medium;
+      }
       if (width !== this.state.chartWidth) {
         this.setState({
-          chartHeight: width * ratioFactor,
+          chartHeight: height,
           chartWidth: width,
         })    
       }
