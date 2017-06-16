@@ -44,27 +44,34 @@ class MeteoriteMap extends Component {
 
   getTopoJsonData() {
     axios.get('https://relwiwa.github.io/datasets/fcc-meteorite-map/countries.topo.json')
-    .then((data) => {
-      const topoJsonData = data.data;
-      this.setState({
-        countriesData: feature(topoJsonData, topoJsonData.objects.units).features,
+      .then((data) => {
+        const topoJsonData = data.data;
+        this.setState({
+          countriesData: feature(topoJsonData, topoJsonData.objects.units).features,
+        });
+      },
+      (error) => {
+        console.log('error countries data', error);
       });
-    });    
   }
 
   getStrikeData() {
     axios.get('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/meteorite-strike-data.json')
-    .then((data) => {
-      const preparedStrikeData = this.prepareStrikeData(data.data);
-      let strikeData = preparedStrikeData.strikeData;
-      strikeData = this.sortStrikeDataByMass(strikeData);
-      this.setState({
-        animationCounter: 0,
-        currentStrikeData: strikeData,
-        currentCenturyFilter: SPEX.strikes.centuriesFilter[0],
-        strikesByCentury: preparedStrikeData.strikesByCentry,
+      .then(
+        (data) => {
+        const preparedStrikeData = this.prepareStrikeData(data.data);
+        let strikeData = preparedStrikeData.strikeData;
+        strikeData = this.sortStrikeDataByMass(strikeData);
+        this.setState({
+          animationCounter: 0,
+          currentStrikeData: strikeData,
+          currentCenturyFilter: SPEX.strikes.centuriesFilter[0],
+          strikesByCentury: preparedStrikeData.strikesByCentry,
+        });
+      },
+      (error) => {
+        console.log('error strike data', error);
       });
-    });
   }
 
   handleStrikesAnimated() {
@@ -151,7 +158,7 @@ class MeteoriteMap extends Component {
       <div className="meteorite-map row">
         <div className="column small-12 text-center">
           <h1>Map of Meteorite Strikes Across the World</h1>
-          <p>This is an interactive map displaying meteorite strikes across the world between 1400 up until now.</p>
+          <p>This is an interactive map displaying meteorite strikes across the world between 1400 up until now</p>
             {/*<Calculations
               strikeData={currentStrikeData}
             />*/}

@@ -29,7 +29,7 @@ class MapProjection extends Component {
   }
 
   componentDidMount() {
-    const { chartHeight, chartWidth } = this.props;
+    const { chartHeight, chartWidth} = this.props;
 
     this.updateCountriesProjection(chartHeight, chartWidth);
     this.addZoom();
@@ -117,9 +117,9 @@ class MapProjection extends Component {
     return (
       <div
         className="map-projection"
-        style={{height: chartHeight, position: 'relative', width: chartWidth}}
+        style={{height: chartHeight, position: 'relative', width: chartWidth, minWidth: chartWidth}}
       >
-        <svg style={{height: chartHeight, width: '100%'}}>
+        <svg style={{height: chartHeight, width: '100%', minWidth: '100%'}}>
           <g ref={(el) => this.svgContentContainer = el}>
             <MeteoriteMapCountries
               countriesProjection={countriesProjection}
