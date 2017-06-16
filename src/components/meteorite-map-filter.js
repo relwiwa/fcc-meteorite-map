@@ -1,5 +1,7 @@
 import React from 'react';
 
+import '../styles/meteorite-map-filter.scss';
+
 /** @name MeteoriteMapFilter
  *  @description Adds ability to filter display of strikes by century
  *  @param filterFunctionalityActive determines whether filter functionality is possible */
@@ -32,7 +34,7 @@ const MeteoriteMapFilter = (props) => {
 
   return (
     <div className="meteorite-map-filter">
-      <ul className="show-for-medium menu align-center">
+      <ul className={'show-for-medium menu align-center' + (!filterFunctionalityActive ? ' filter-inactive' : '')}>
         {filterCategories.map(item => (
           <li
             key={item}
@@ -42,17 +44,17 @@ const MeteoriteMapFilter = (props) => {
           </li>
         ))}
         <li
-          className={currentFilter === null ? 'is-active' : null}
+          className={filterFunctionalityActive && currentFilter === null ? 'is-active' : null}
         >
           <a onClick={filterFunctionalityActive ? () => onUpdateFilter(null) : null}>All-Time</a>
         </li>
       </ul>
-      <ul className="show-for-small-only menu expanded align-center row">
+      <ul className={'show-for-small-only menu expanded align-center row' + (!filterFunctionalityActive ? ' filter-inactive' : '')}>
         <li className="column small-4">
           <a onClick={filterFunctionalityActive ? () => filterBackwards() : null}>&lt;&lt;</a>
         </li>
         <li className="is-active column small-4">
-          {!filterFunctionalityActive && <a>{currentFilter === null ? ' ' : currentFilter}</a>}
+          {!filterFunctionalityActive && <a>{currentFilter === null ? 'Century' : currentFilter}</a>}
           {filterFunctionalityActive && <a>{currentFilter === null ? 'All-Time' : currentFilter}</a>}
         </li>
         <li className="column small-4">

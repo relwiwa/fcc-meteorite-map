@@ -29,7 +29,7 @@ class MeteoriteMap extends Component {
     super(props);
 
     this.state = {
-      animationCounter: null,
+      animationCounter: 0,
       countriesData: [],
       currentCenturyFilter: null,
       currentStrikeData: [],
