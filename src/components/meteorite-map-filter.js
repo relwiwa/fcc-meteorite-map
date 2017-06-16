@@ -1,7 +1,10 @@
 import React from 'react';
 
-const MapFilter = (props) => {
-  const { currentFilter, filterCategories, onUpdateFilter } = props;
+/** @name MeteoriteMapFilter
+ *  @description Adds ability to filter display of strikes by century
+ *  @param filterFunctionalityActive determines whether filter functionality is possible */
+const MeteoriteMapFilter = (props) => {
+  const { currentFilter, filterFunctionalityActive, filterCategories, onUpdateFilter } = props;
 
   const filterBackwards = () => {
     if (currentFilter === null) {
@@ -28,35 +31,36 @@ const MapFilter = (props) => {
   }
 
   return (
-    <div className="map-filter">
+    <div className="meteorite-map-filter">
       <ul className="show-for-medium menu align-center">
-        <li
-          className={currentFilter === null ? 'is-active' : null}
-        >
-          <a onClick={() => onUpdateFilter(null)}>All-Time</a>
-        </li>
         {filterCategories.map(item => (
           <li
             key={item}
             className={currentFilter === item ? 'is-active' : null}
           >
-            <a onClick={() => onUpdateFilter(item)}>{item}</a>
+            <a onClick={filterFunctionalityActive ? () => onUpdateFilter(item) : null}>{item}</a>
           </li>
         ))}
+        <li
+          className={currentFilter === null ? 'is-active' : null}
+        >
+          <a onClick={filterFunctionalityActive ? () => onUpdateFilter(null) : null}>All-Time</a>
+        </li>
       </ul>
       <ul className="show-for-small-only menu expanded align-center row">
         <li className="column small-4">
-          <a onClick={() => filterBackwards()}>&lt;&lt;&lt;</a>
+          <a onClick={filterFunctionalityActive ? () => filterBackwards() : null}>&lt;&lt;</a>
         </li>
         <li className="is-active column small-4">
-          <a>{currentFilter === null ? 'All-Time' : currentFilter}</a>
+          {!filterFunctionalityActive && <a>{currentFilter === null ? ' ' : currentFilter}</a>}
+          {filterFunctionalityActive && <a>{currentFilter === null ? 'All-Time' : currentFilter}</a>}
         </li>
         <li className="column small-4">
-          <a onClick={() => filterForwards()}>&gt;&gt;&gt;</a>
+          <a onClick={filterFunctionalityActive ? () => filterForwards() : null}>&gt;&gt;</a>
         </li>
       </ul>
     </div>
   );
 }
 
-export default MapFilter;
+export default MeteoriteMapFilter;

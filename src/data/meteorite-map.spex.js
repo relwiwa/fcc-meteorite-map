@@ -1,4 +1,8 @@
 const SPEX = {
+  animation: {
+    intervalDuration: 1000,
+    timeoutDuration: 2000
+  },
   map: {
     ratioFactor: {
       small: 0.7,

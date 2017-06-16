@@ -20,3 +20,7 @@ circle:hover {
   stroke: $colorSecondary;
   stroke-width: 2;
 }
+
+circle.visible {
+  display:block;
+}

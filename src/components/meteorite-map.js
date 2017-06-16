@@ -6,7 +6,7 @@ import { feature } from 'topojson-client';
 
 import Calculations from './calculations';
 import MapProjectionWithResizeHandling from './map-projection-with-resize-handling';
-import MapFilter from './map-filter';
+import MeteoriteMapFilter from './meteorite-map-filter';
 
 import SPEX from '../data/meteorite-map.spex';
 
@@ -21,7 +21,7 @@ import SPEX from '../data/meteorite-map.spex';
 
 es6Promise.polyfill();
 const axiosConfig = axios.create({
-  timeout: 1000
+  timeout: 5000
 });
 
 class MeteoriteMap extends Component {
@@ -29,9 +29,11 @@ class MeteoriteMap extends Component {
     super(props);
 
     this.state = {
+      animationCounter: null,
       countriesData: [],
       currentCenturyFilter: null,
       currentStrikeData: [],
+      strikesByCentury: [],
     }
   }
   
@@ -53,12 +55,34 @@ class MeteoriteMap extends Component {
   getStrikeData() {
     axios.get('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/meteorite-strike-data.json')
     .then((data) => {
-      this.strikeData = this.prepareStrikeData(data.data);
-      this.strikeData = this.sortStrikeData(this.strikeData);
+      const preparedStrikeData = this.prepareStrikeData(data.data);
+      let strikeData = preparedStrikeData.strikeData;
+      strikeData = this.sortStrikeDataByMass(strikeData);
       this.setState({
-        currentStrikeData: this.strikeData,
-      })
+        animationCounter: 0,
+        currentStrikeData: strikeData,
+        currentCenturyFilter: SPEX.strikes.centuriesFilter[0],
+        strikesByCentury: preparedStrikeData.strikesByCentry,
+      });
     });
+  }
+
+  handleStrikesAnimated() {
+    const { animationCounter } = this.state;
+    const { centuriesFilter } = SPEX.strikes;
+
+    if (animationCounter >= centuriesFilter.length - 1) {
+      this.setState({
+        animationCounter: null,
+        currentCenturyFilter: null,
+      });
+    }
+    else {
+      this.setState({
+        animationCounter: animationCounter + 1,
+        currentCenturyFilter: centuriesFilter[animationCounter + 1],
+      });
+    }
   }
 
   handleFilterByCentury(filterBy) {
@@ -69,15 +93,25 @@ class MeteoriteMap extends Component {
     });
   }
 
+  /** @name prepareStrikeData
+   *  @description sets up two objects:
+   *  - one for general display, with just the properties needed
+   *  - another for animation of strikes, containing the ids of the strike objects, sorted by century
+   *  @param {*} data - strikeData that was loaded remotely */
   prepareStrikeData(data) {
     let strikeData = [];
     const strikeAmount = 953;
+    let strikesByCentury = {};
+    SPEX.strikes.centuriesFilter.map(item => {
+      strikesByCentury[item] =  [];
+    });
 
     data.features.map((feature, index) => {
       if (feature.geometry && feature.properties.mass !== null && feature.properties.year !== null) {
         const year = feature.properties.year.substr(0, 4);
+        const century = Number(year.substr(0, 2) + '00'); 
         let strikeDatum = {
-          century: Number(year.substr(0, 2) + '00'),
+          century: century,
           coordinates: feature.geometry.coordinates,
           id: feature.properties.id,
           fill: `rgba(38,50,56,${1 / strikeAmount * index})`,
@@ -89,21 +123,29 @@ class MeteoriteMap extends Component {
         // Get rid of outlier values
         if (strikeDatum.year > 1000 && strikeDatum.mass < 1000000) {
           strikeData.push(strikeDatum);
+          strikesByCentury[century].push({
+            id: strikeDatum.id,
+            year: year
+          });
         }
       }
     });
-    return strikeData;   
+    return {
+      strikeData: strikeData,
+      strikesByCentry: strikesByCentury   
+    }
   }
 
   // Sort strike Data for proper display in SVG (order is important)
-  sortStrikeData(data) {
+  sortStrikeDataByMass(data) {
     return data.sort((a, b) => {
       return b.mass - a.mass
     });
   }
   
   render() {
-    const { countriesData, currentCenturyFilter, currentStrikeData } = this.state;
+    const { animationCounter, countriesData, currentCenturyFilter, currentStrikeData, strikesByCentury } = this.state;
+    const { centuriesFilter } = SPEX.strikes;
 
     return (
       <div className="meteorite-map row">
@@ -113,14 +155,17 @@ class MeteoriteMap extends Component {
             {/*<Calculations
               strikeData={currentStrikeData}
             />*/}
-            <MapFilter
+            <MeteoriteMapFilter
               currentFilter={currentCenturyFilter}
-              filterCategories={SPEX.strikes.centuriesFilter}
+              filterFunctionalityActive={animationCounter === null ? true : false}
+              filterCategories={centuriesFilter}
               onUpdateFilter={(filterData) => this.handleFilterByCentury(filterData)}
             />
             <MapProjectionWithResizeHandling
+              strikesToAnimate={animationCounter !== null ? strikesByCentury[centuriesFilter[animationCounter]] : null}
               countriesData={countriesData}
               currentCenturyFilter={currentCenturyFilter}
+              onStrikesAnimated={animationCounter !== null ? () => this.handleStrikesAnimated() : null}
               strikeData={currentStrikeData}
             />
         </div>

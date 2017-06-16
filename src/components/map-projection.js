@@ -108,7 +108,7 @@ class MapProjection extends Component {
 
 
   render() {
-    const { chartHeight, chartWidth, currentCenturyFilter, strikeData } = this.props;
+    const { chartHeight, chartWidth, currentCenturyFilter, onStrikesAnimated, strikeData, strikesToAnimate } = this.props;
     const { countriesProjection, currentStrike, strikesProjection, zoomed } = this.state;
 
     const countriesProjected = countriesProjection.length > 0 ? true : false;
@@ -126,9 +126,11 @@ class MapProjection extends Component {
             />
             {countriesProjected && <MeteoriteMapStrikes
               currentCenturyFilter={currentCenturyFilter}
+              onStrikesAnimated={onStrikesAnimated}
               onUpdateCurrentStrike={(strikeDatum) => this.setState({ currentStrike: strikeDatum })}
               strikeData={strikeData}
               strikesProjection={strikesProjection}
+              strikesToAnimate={strikesToAnimate}
             />}
           </g>
         </svg>
@@ -138,6 +140,9 @@ class MapProjection extends Component {
             onClick={zoomed ? () => this.resetZoom() : null}
           >Reset Zoom</a>
         </div>
+        {(countriesProjected && strikesToAnimate !== null && currentStrike === null) && <MeteoriteMapMessageBox>
+          <b>{this.props.strikesToAnimate.length}</b> documented strike{this.props.strikesToAnimate.length > 1 ? 's' : ''} in the <b>{this.props.currentCenturyFilter / 100}th century</b>
+        </MeteoriteMapMessageBox>}
         {(!countriesProjected || strikeData.length === 0) && <MeteoriteMapMessageBox>
           <span><i className="fa fa-spin fa-pulse fa-spinner"></i> Getting {!countriesProjected ? 'map' : ''} {!countriesProjected && !strikesProjected ? ' and' : ''} {!strikesProjected ? ' meteorite strike' : ''} data</span>
         </MeteoriteMapMessageBox>}
