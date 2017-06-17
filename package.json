@@ -7,7 +7,7 @@
     "build": "npm run clean && webpack --config webpack.config.js -p",
     "clean": "rimraf build",
     "serve": "webpack-dev-server --config webpack.config.dev.js",
-    "deploy:gh-pages": "npm run build && git subtree push --prefix build origin gh-pages"
+    "deploy:gh-pages": "npm run build && ren build buildx && git checkout gh-pages && rimraf build && ren buildx build && git add . && git commit --message=\"Commit to gh-pages branch\" && git subtree push --prefix build github gh-pages && git checkout master"
   },
   "repository": {
     "type": "git",
