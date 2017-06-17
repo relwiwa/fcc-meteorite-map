@@ -49,7 +49,7 @@ const MeteoriteMapFilter = (props) => {
           <a onClick={filterFunctionalityActive ? () => onUpdateFilter(null) : null}>All-Time</a>
         </li>
       </ul>
-      <ul className={'show-for-small-only menu expanded align-center row' + (!filterFunctionalityActive ? ' filter-inactive' : '')}>
+      <ul className={'show-for-small-only menu align-center row' + (!filterFunctionalityActive ? ' filter-inactive' : '')}>
         <li className="column small-4">
           <a onClick={filterFunctionalityActive ? () => filterBackwards() : null}>&lt;&lt;</a>
         </li>
