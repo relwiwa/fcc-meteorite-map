@@ -23,7 +23,10 @@ const config = {
       {
         use: 'babel-loader',
         test: /\.js$/,
-        exclude: /node_modules/
+        include: [
+          path.resolve(__dirname, 'src'),
+          path.resolve(__dirname, 'node_modules/foundation-sites/js')
+        ]
       },
       {
         loader: ExtractTextPlugin.extract({

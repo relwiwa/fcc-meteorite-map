@@ -4,10 +4,11 @@
   "description": "D3 Map representing meteorite landings. Project as part of FreeCodeCamp's Data Visualization Certification",
   "main": "index.js",
   "scripts": {
-    "build": "npm run clean && webpack --config webpack.config.js -p",
+    "build": "npm run clean && webpack -p",
     "clean": "rimraf build",
     "serve": "webpack-dev-server --config webpack.config.dev.js",
-    "deploy:gh-pages": "npm run build && ren build buildx && git checkout gh-pages && rimraf build && ren buildx build && git add . && git commit --message=\"Commit to gh-pages branch\" && git subtree push --prefix build github gh-pages && git checkout master"
+    "deploy:gh-pages": "npm run build && ren build buildx && git checkout gh-pages && rimraf build && ren buildx build && git add . && git commit --message=\"Commit to gh-pages branch\" && git subtree push --prefix build github gh-pages && git checkout master",
+    "deploy:surge": "surge -p build"
   },
   "repository": {
     "type": "git",
@@ -16,32 +17,31 @@
   "author": "Walter",
   "license": "MIT",
   "devDependencies": {
-    "babel-core": "^6.24.1",
-    "babel-loader": "^7.0.0",
-    "babel-plugin-syntax-dynamic-import": "^6.18.0",
-    "babel-preset-env": "^1.5.1",
-    "babel-preset-react": "^6.24.1",
-    "css-loader": "^0.28.4",
-    "extract-text-webpack-plugin": "^2.1.0",
-    "file-loader": "0.11.1",
-    "html-webpack-plugin": "^2.28.0",
-    "image-webpack-loader": "^3.3.1",
-    "node-sass": "^4.5.3",
-    "rimraf": "^2.6.1",
-    "sass-loader": "^6.0.5",
-    "url-loader": "^0.5.8",
-    "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5"
+    "babel-core": "~6.25.0",
+    "babel-loader": "~7.1.1",
+    "babel-preset-es2015": "~6.24.1",
+    "babel-preset-react": "~6.24.1",
+    "css-loader": "~0.28.4",
+    "extract-text-webpack-plugin": "~2.1.2",
+    "file-loader": "~0.11.1",
+    "html-webpack-plugin": "~2.30.1",
+    "image-webpack-loader": "~3.3.1",
+    "node-sass": "~4.5.3",
+    "rimraf": "~2.6.1",
+    "sass-loader": "~6.0.5",
+    "url-loader": "~0.5.8",
+    "webpack": "~2.6.1",
+    "webpack-dev-server": "~2.6.1"
   },
   "dependencies": {
-    "axios": "^0.16.2",
-    "d3-geo": "^1.6.4",
-    "d3-selection": "^1.1.0",
-    "d3-zoom": "^1.3.0",
-    "es6-promise": "^4.1.0",
-    "foundation-sites": "^6.4.0-rc3",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
-    "topojson-client": "^3.0.0"
+    "axios": "~0.16.2",
+    "d3-geo": "~1.6.4",
+    "d3-selection": "~1.1.0",
+    "d3-zoom": "~1.5.0",
+    "es6-promise": "~4.1.0",
+    "foundation-sites": "~6.4.1",
+    "react": "~15.6.1",
+    "react-dom": "~15.6.1",
+    "topojson-client": "~3.0.0"
   }
 }
