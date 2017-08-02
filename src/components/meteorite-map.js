@@ -153,26 +153,28 @@ class MeteoriteMap extends Component {
     const { centuriesFilter } = SPEX.strikes;
 
     return (
-      <div className="meteorite-map row">
-        <div className="column small-12 text-center">
-          <h1>Map of Meteorite Strikes Across the World</h1>
-          <p>This is an interactive map displaying meteorite strikes across the world between 1400 up until now</p>
-            {/*<Calculations
-              strikeData={currentStrikeData}
-            />*/}
-            <MeteoriteMapFilter
-              currentFilter={currentCenturyFilter}
-              filterFunctionalityActive={animationCounter === null ? true : false}
-              filterCategories={centuriesFilter}
-              onUpdateFilter={(filterData) => this.handleFilterByCentury(filterData)}
-            />
-            <MapProjectionWithResizeHandling
-              strikesToAnimate={animationCounter !== null ? strikesByCentury[centuriesFilter[animationCounter]] : null}
-              countriesData={countriesData}
-              currentCenturyFilter={currentCenturyFilter}
-              onStrikesAnimated={animationCounter !== null ? () => this.handleStrikesAnimated() : null}
-              strikeData={currentStrikeData}
-            />
+      <div className="meteorite-map grid-container grid-container-padded">
+        <div className="grid-x">
+          <div className="cell text-center">
+            <h1>Map of Meteorite Strikes Across the World</h1>
+            <p>This is an interactive map displaying meteorite strikes across the world between 1400 up until now</p>
+              {/*<Calculations
+                strikeData={currentStrikeData}
+              />*/}
+              <MeteoriteMapFilter
+                currentFilter={currentCenturyFilter}
+                filterFunctionalityActive={animationCounter === null ? true : false}
+                filterCategories={centuriesFilter}
+                onUpdateFilter={(filterData) => this.handleFilterByCentury(filterData)}
+              />
+              <MapProjectionWithResizeHandling
+                strikesToAnimate={animationCounter !== null ? strikesByCentury[centuriesFilter[animationCounter]] : null}
+                countriesData={countriesData}
+                currentCenturyFilter={currentCenturyFilter}
+                onStrikesAnimated={animationCounter !== null ? () => this.handleStrikesAnimated() : null}
+                strikeData={currentStrikeData}
+              />
+          </div>
         </div>
       </div>
     );

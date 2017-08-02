@@ -117,7 +117,7 @@ class MapProjection extends Component {
     return (
       <div
         className="map-projection"
-        style={{height: chartHeight, position: 'relative', width: chartWidth, minWidth: chartWidth}}
+        style={{height: chartHeight, position: 'relative', width: chartWidth, minWidth: chartWidth, marginBottom: 20}}
       >
         <svg style={{height: chartHeight, width: '100%', minWidth: '100%'}}>
           <g ref={(el) => this.svgContentContainer = el}>
