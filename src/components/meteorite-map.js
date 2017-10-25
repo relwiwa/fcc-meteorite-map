@@ -1,5 +1,4 @@
 import axios from 'axios';
-import es6Promise from 'es6-promise';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { feature } from 'topojson-client';
@@ -19,7 +18,6 @@ import SPEX from '../data/meteorite-map.spex';
       - topojson --simplify-proportion .08 --id-property SU_A3 -p name=NAME -o countries.json units.json */
 //import topoJsonData from '../data/countries.topo.json';
 
-es6Promise.polyfill();
 const axiosConfig = axios.create({
   timeout: 5000
 });
