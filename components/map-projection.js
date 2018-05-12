@@ -144,7 +144,7 @@ class MapProjection extends Component {
           <b>{this.props.strikesToAnimate.length}</b> documented strike{this.props.strikesToAnimate.length > 1 ? 's' : ''} in the <b>{this.props.currentCenturyFilter / 100}th century</b>
         </MeteoriteMapMessageBox>}
         {(!countriesProjected || strikeData.length === 0) && <MeteoriteMapMessageBox>
-          <span><i className="fa fa-spin fa-pulse fa-spinner"></i> Getting {!countriesProjected ? 'map' : ''} {!countriesProjected && !strikesProjected ? ' and' : ''} {!strikesProjected ? ' meteorite strike' : ''} data</span>
+          <span>Getting {!countriesProjected ? 'map' : ''} {!countriesProjected && !strikesProjected ? ' and' : ''} {!strikesProjected ? ' meteorite strike' : ''} data</span>
         </MeteoriteMapMessageBox>}
         {currentStrike !== null && <MeteoriteMapMessageBox>
           <b>{currentStrike.name}</b> had a mass of <b>{(currentStrike.mass / 1000)} kg</b> in <b>{currentStrike.year}</b>
