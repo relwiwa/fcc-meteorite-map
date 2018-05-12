@@ -4,7 +4,8 @@ es6Promise.polyfill();
 import React from 'react';
 import { render } from 'react-dom';
 
-import './global-styles.scss';
+import '../../../styles/global-styles.scss';
+
 import MeteoriteMap from './components/meteorite-map';
 
 render(

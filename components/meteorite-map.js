@@ -156,7 +156,7 @@ class MeteoriteMap extends Component {
       <div className="meteorite-map grid-container grid-container-padded">
         <div className="grid-x">
           <div className="cell text-center">
-            <h1>Map of Meteorite Strikes Across the World</h1>
+            <h1>Map of Meteorite Strikes</h1>
             <p>This is an interactive map displaying meteorite strikes across the world between 1400 up until now</p>
               {/*<Calculations
                 strikeData={currentStrikeData}
