@@ -1,10 +1,12 @@
-$colorPrimary:              #1779ba;
-$colorSecondary:            #ffae00;
+@import '../../../styles/color-scheme.scss';
 
-$colorBorders:              gray;
-$colorBordersLight:         lightgray;
+$colorPrimary:              $primaryColor;
+$colorSecondary:            $secondaryColor;
+
+$colorBorders:              $grayColorDark;
+$colorBordersLight:         $grayColorLight;
 
 $colorStrikesFillActive:    rgba(255, 174, 0, 0.7);
 $colorTooltipBackground:    rgba(190, 190, 190, 0.7);
 
-$colorCountries:            lightblue;
+$colorCountries:            $primaryColor;
